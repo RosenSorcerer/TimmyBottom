@@ -33,13 +33,14 @@ timestampRecurse = (str) => {
       min = replacement.slice(2);
     }
 
-    //adjust for PM if necessary
-    if (0 < secondHalf.search(/[Pp].?[Mm]/) && secondHalf.search(/[Pp].?[Mm]/) < 5) {
+    //adjust for PM -- Assume PM unless stated otherwise
+    if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 5)) {
       hour = parseInt(hour) + 12;
     }
 
     //Strip redundant AM and PM usage
     secondHalf = secondHalf.replace(/[PpAa].?[Mm]/, '');
+
     //convert time into ms since epoch
     let schedule = new Date();
     schedule.setHours(hour, min, 0, 0);
