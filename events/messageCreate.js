@@ -6,7 +6,6 @@ const { Events } = require('discord.js');
 timestampRecurse = (str) => {
   let result = '';
 
-
   //Search for presence of a time format
   let regexIndex = str.search(/\d+[:]\d\d/);
 
@@ -33,12 +32,12 @@ timestampRecurse = (str) => {
       hour = replacement.slice(0, 1);
       min = replacement.slice(2);
     }
-console.log('second Half: ' + secondHalf);
+
     //adjust for PM if necessary
     if (0 < secondHalf.search(/[Pp].?[Mm]/) && secondHalf.search(/[Pp].?[Mm]/) < 5) {
       hour = parseInt(hour) + 12;
     }
-console.log('ping 2');
+
     //Strip redundant AM and PM usage
     secondHalf = secondHalf.replace(/[PpAa].?[Mm]/, '');
     //convert time into ms since epoch
@@ -54,7 +53,6 @@ console.log('ping 2');
   }
 
   result = firstHalf + replacement + secondHalf;
-
   return result;
 }
 
@@ -63,7 +61,7 @@ module.exports = {
   async execute(message) {
   if (!message.author.bot) {
       let str = message.content;
-      console.log(str);
+
     //If message contains a time format, send it to the recursive helper
       if (/\d+[:]\d\d/.test(str)) {
         timestampRecurse(str);
