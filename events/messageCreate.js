@@ -1,18 +1,27 @@
 const { Events } = require('discord.js');
-
+const database = require('../db');
+const db = database.db;
+const botTZ = -7;
 
 //Improvement idea -- search for multiple using recursion.
 
-timestampRecurse = (str) => {
+fetchTimeZone = (userID) => {
+  db.query(`SELECT timezone FROM users WHERE user_id = $1`, [userID], (err, result) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    return result;
+  })
+}
+
+timestampRecurse = (str, adjustment) => {
   let result = '';
 
   //Search for presence of a time format
   let regexIndex = str.search(/\d+[:]\d\d/);
 
   if (regexIndex > -1) {
-
-    //fetch timezone from db
-    // let timezoneAdjust = -7;
 
     //Initialize time
     let hour = 0;
@@ -37,6 +46,9 @@ timestampRecurse = (str) => {
     if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 5)) {
       hour = parseInt(hour) + 12;
     }
+
+    //Factor in timezone adjustment
+    hour += adjustment;
 
     //Strip redundant AM and PM usage
     secondHalf = secondHalf.replace(/[PpAa].?[Mm]/, '');
@@ -65,8 +77,9 @@ module.exports = {
 
     //If message contains a time format, send it to the recursive helper
       if (/\d+[:]\d\d/.test(str)) {
-        timestampRecurse(str);
-        await message.reply(timestampRecurse(str));
+        //fetch timezone from db
+        var userTZ = fetchTimeZone(id) || -8;
+        await message.reply(timestampRecurse(str, userTZ - botTZ ));
       }
     }
   }
