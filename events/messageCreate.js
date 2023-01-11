@@ -79,7 +79,11 @@ module.exports = {
       if (/\d+[:]\d\d/.test(str)) {
         //fetch timezone from db
         var userTZ = fetchTimeZone(id) || -8;
-        await message.reply(timestampRecurse(str, userTZ - botTZ ));
+        if (userTZ) {
+          await message.reply(timestampRecurse(str, userTZ - botTZ ));
+        } else {
+          await message.reply({content: "Sorry! It seems your timezone hasn't been set! Please set your timezone. You can use the /timezone command to do so~", ephemeral: true});
+        }
       }
     }
   }
