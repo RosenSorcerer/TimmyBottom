@@ -14,22 +14,22 @@ module.exports = {
             {
               label: 'Pacific Time',
               description: 'For all of you California and other coastal people!',
-              value: -8,
+              value: '-8',
             },
             {
               label: 'Mountain Time',
               description: 'The Rockies, The Desert, and the Salty Lake',
-              value: -7,
+              value: '-7',
             },
             {
               label: 'Central Time',
               description: 'I don\'t think I know anyone here',
-              value: -6,
+              value: '-6',
             },
             {
               label: 'Eastern Time',
               description: 'For all of those fancy city slickers in the East',
-              value: -5,
+              value: '-5',
             },
           ),
       );
