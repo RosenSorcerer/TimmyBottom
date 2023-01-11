@@ -21,6 +21,7 @@ module.exports = {
 
 		if(interaction.isStringSelectMenu()) {
 			console.log(interaction);
+			await interaction.reply({content: 'Pong!', ephemeral: true});
 		}
 
 	},
