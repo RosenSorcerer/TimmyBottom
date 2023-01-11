@@ -1,7 +1,7 @@
 // const { Pool } = require('pg');
 
 // const pool = new Pool({
-//   user: 'FIXME'
+//   user: 'FIXME' //TODO: NameUser,
 //   host: 'localhost',
 //   port: 5432,
 //   password: 'FIXME'// TODO: CreatePassword,
