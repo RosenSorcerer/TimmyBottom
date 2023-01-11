@@ -21,7 +21,7 @@ module.exports = {
 
 		if(interaction.isStringSelectMenu()) {
 			console.log(interaction);
-			await interaction.reply({content: 'Pong!', ephemeral: true});
+			await interaction.update({content: 'Timezone Set! Thank you~', components: [], ephemeral: true});
 		}
 
 	},
