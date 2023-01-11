@@ -3,18 +3,6 @@ const database = require('../db');
 const db = database.db;
 const botTZ = -7;
 
-//Improvement idea -- search for multiple using recursion.
-
-fetchTimeZone = (userID) => {
-  db.query(`SELECT timezone FROM users WHERE user_id = $1`, [userID], (err, result) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    return result;
-  })
-}
-
 timestampRecurse = (str, adjustment) => {
   let result = '';
 
@@ -78,9 +66,12 @@ module.exports = {
     //If message contains a time format, send it to the recursive helper
       if (/\d+[:]\d\d/.test(str)) {
         //fetch timezone from db
-        var userTZ = fetchTimeZone(id) || -8;
+        var userTZ;
+        await db.query(`SELECT timezone FROM users WHERE user_id = $1`, [message.author.id])
+        .then(res => userTZ = res.rows[0].timezone)
+
         if (userTZ) {
-          await message.reply(timestampRecurse(str, userTZ - botTZ ));
+          await message.reply(timestampRecurse(str, botTZ - userTZ ));
         } else {
           await message.reply({content: "Sorry! It seems your timezone hasn't been set! Please set your timezone. You can use the /timezone command to do so~", ephemeral: true});
         }
