@@ -69,7 +69,11 @@ module.exports = {
         //fetch timezone from db
         var userTZ;
         await db.query(`SELECT timezone FROM users WHERE user_id = $1`, [message.author.id])
-        .then(res => userTZ = res.rows[0].timezone)
+        .then((res) => {
+          if(res.rows[0]) {
+            userTZ = res.rows[0].timezone;
+          }
+        })
 
         if (userTZ) {
           await message.reply(timestampRecurse(str, botTZ - userTZ ));
