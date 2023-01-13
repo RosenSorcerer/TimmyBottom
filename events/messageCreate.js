@@ -78,7 +78,6 @@ module.exports = {
         if (userTZ) {
           await message.reply(timestampRecurse(str, botTZ - userTZ ));
         } else {
-          console.log(message);
           await message.author.send("Sorry! It seems your timezone hasn't been set! To set it, you can use the /timezone command right here~");
         }
       }
