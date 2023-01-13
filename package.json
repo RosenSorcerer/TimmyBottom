@@ -2,5 +2,9 @@
   "dependencies": {
     "discord.js": "^14.7.1",
     "pg": "^8.8.0"
+  },
+  "scripts" : {
+    "start": "node index.js",
+    "deploy": "node deploy-command.js"
   }
 }
