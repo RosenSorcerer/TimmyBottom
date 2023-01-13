@@ -21,19 +21,19 @@ timestampRecurse = (str, adjustment) => {
       var firstHalf = str.slice(0, regexIndex);
       var replacement = str.slice(regexIndex, regexIndex + 5);
       var secondHalf = str.slice(regexIndex + 5);
-      hour = replacement.slice(0, 2);
+      hour = parseInt(replacement.slice(0, 2));
       min = replacement.slice(3);
     } else {
       var firstHalf = str.slice(0, regexIndex);
       var replacement = str.slice(regexIndex, regexIndex + 4);
       var secondHalf = str.slice(regexIndex + 4);
-      hour = replacement.slice(0, 1);
+      hour = parseInt(replacement.slice(0, 1));
       min = replacement.slice(2);
     }
 
     //adjust for PM -- Assume PM unless stated otherwise
     if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 5)) {
-      hour = parseInt(hour) + 12;
+      hour = hour + 12;
     }
 
     //Factor in timezone adjustment
@@ -78,7 +78,14 @@ module.exports = {
         if (userTZ) {
           await message.reply(timestampRecurse(str, botTZ - userTZ ));
         } else {
-          await message.author.send("Sorry! It seems your timezone hasn't been set! To set it, you can use the /timezone command right here~");
+
+          try {
+            await message.author.send("Sorry! It seems your timezone hasn't been set! To set it, you can use the /timezone command right here~");
+          } catch (error) {
+            console.error(error.rawError.message);
+            await message.reply("Sorry! It seems your timezone hasn't been set! To set it, you can use the /timezone command right here~");
+          }
+
         }
       }
     }
