@@ -5,6 +5,7 @@
   },
   "scripts" : {
     "start": "node index.js",
-    "deploy": "node deploy-command.js"
+    "deploy": "node deploy-command.js",
+    "global": "node deploy-command-global.js"
   }
 }
