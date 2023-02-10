@@ -1,7 +1,7 @@
 const { Events } = require('discord.js');
 const database = require('../db');
 const db = database.db;
-const setGlobal = require '../followups/setGlobalTimeZone.js';
+const setGlobal = require('../followups/setGlobalTimeZone.js');
 
 setTimezone = (id, value) => {
 	db.query(`INSERT INTO users(user_id, timezone) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET timezone = $2`, [id, parseInt(value)], (err, result) => {
