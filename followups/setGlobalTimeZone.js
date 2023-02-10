@@ -132,19 +132,9 @@ module.exports = {
               label: '+12:00',
               description: '12:00 UTC Offset',
               value: '12',
-            },
-            // {
-            //   label: '+13:00',
-            //   description: '13:00 UTC Offset',
-            //   value: '13',
-            // },
-            // {
-            //   label: '+14:00',
-            //   description: '14:00 UTC Offset',
-            //   value: '14',
-            // },
+            }
           ),
       );
-    await interaction.reply({content: 'Please set your timezone~', components: [row], ephemeral: true});
+    await interaction.update({content: 'Please set your timezone~', components: [row], ephemeral: true});
   }
 }
