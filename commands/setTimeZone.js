@@ -43,7 +43,7 @@ module.exports = {
             },
             {
               label: 'Outside of the US',
-              description: 'List timezones by their adjustment to Greenwhich Mean Time.',
+              description: 'List timezones by their adjustment to Coordinated Universal Time.',
               value: 'Global',
             },
           ),
