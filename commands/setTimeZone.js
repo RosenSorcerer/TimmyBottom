@@ -33,13 +33,18 @@ module.exports = {
             },
             {
               label: 'Central Time',
-              description: 'Ope! It\'s the Midwest!',
+              description: 'Ope! \'Scuse me! It\'s the Midwest!',
               value: '-6',
             },
             {
               label: 'Eastern Time',
               description: 'For all of those fancy city slickers in the East',
               value: '-5',
+            },
+            {
+              label: 'Outside of the US',
+              description: 'List timezones by their adjustment to Greenwhich Mean Time.',
+              value: 'Global',
             },
           ),
       );
