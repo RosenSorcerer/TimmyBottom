@@ -13,7 +13,7 @@ module.exports = {
           .addOptions(
             {
               label: 'Pacific Time',
-              description: 'For all of you California and other coastal people!',
+              description: 'For all of you Californians and other coastal people!',
               value: '-8',
             },
             {
@@ -23,7 +23,7 @@ module.exports = {
             },
             {
               label: 'Central Time',
-              description: 'I don\'t think I know anyone here',
+              description: 'Ope! It\'s the Midwest!',
               value: '-6',
             },
             {
