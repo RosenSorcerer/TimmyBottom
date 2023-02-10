@@ -12,6 +12,16 @@ module.exports = {
           .setPlaceholder('Select your timezone')
           .addOptions(
             {
+              label: 'Hawaii Time',
+              description: 'Insert Generic Surfing Reference Here',
+              value: '-10',
+            },
+            {
+              label: 'Alaska',
+              description: 'Home of the Alaskan Bullworm. It\'s big, scary, and pink!',
+              value: '-9',
+            },
+            {
               label: 'Pacific Time',
               description: 'For all of you Californians and other coastal people!',
               value: '-8',
