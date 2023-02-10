@@ -1,6 +1,7 @@
 const { Events } = require('discord.js');
 const database = require('../db');
 const db = database.db;
+const setGlobal = require '../followups/setGlobalTimeZone.js';
 
 setTimezone = (id, value) => {
 	db.query(`INSERT INTO users(user_id, timezone) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET timezone = $2`, [id, parseInt(value)], (err, result) => {
@@ -33,11 +34,25 @@ module.exports = {
 		}
 
 		if(interaction.isStringSelectMenu()) {
-			let err = setTimezone(interaction.user.id, interaction.values[0])
+			if (isNaN(interaction.values[0])) {
+				if (interaction.values[0] === 'Global') {
+					try {
+						await setGlobal.execute(interaction);
+					} catch (error) {
+						console.error(`Error setting timezone`);
+						console.error(error);
+					}
+				}
+			}
+
+			else {
+				let err = setTimezone(interaction.user.id, interaction.values[0])
 			if (err) {
 				await interaction.update({content: 'Something went wrong!', components: [], ephemeral: true});
 			}
 			await interaction.update({content: 'Timezone Set! Thank you~', components: [], ephemeral: true});
+			}
+
 		}
 	},
 };
