@@ -32,7 +32,7 @@ timestampRecurse = (str, adjustment) => {
     }
 
     //adjust for PM -- Assume PM unless stated otherwise
-    if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 5)) {
+    if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 5) || hour > 12) {
       hour = hour + 12;
     }
 
