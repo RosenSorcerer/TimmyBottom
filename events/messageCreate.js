@@ -62,10 +62,12 @@ module.exports = {
   name: Events.MessageCreate,
   async execute(message) {
   if (!message.author.bot) {
+      console.log("Message Recieved!");
       let str = message.content;
 
     //If message contains a time format, send it to the recursive helper
       if (/\d+[:]\d\d/.test(str)) {
+        console.log("It's go time!~");
         //fetch timezone from db
         var userTZ;
         await db.query(`SELECT timezone FROM users WHERE user_id = $1`, [message.author.id])
