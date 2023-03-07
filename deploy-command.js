@@ -4,10 +4,10 @@ const fs = require('node:fs');
 
 const commands = [];
 // Grab all command files from the commands directory
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands-private').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
+  const command = require(`./commands-private/${file}`);
   commands.push(command.data.toJSON());
 }
 
