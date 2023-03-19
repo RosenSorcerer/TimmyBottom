@@ -5,7 +5,7 @@ const botTZ = -7;
 
 
 timestampRecurse = (str, adjustment) => {
-  let result = '';
+  let result = str;
 
 
   //Search for presence of a time format
@@ -57,12 +57,13 @@ timestampRecurse = (str, adjustment) => {
       secondHalf = timestampRecurse(secondHalf);
     }
   }
-
+ if (firstHalf) {
   result = firstHalf + replacement + secondHalf;
+ }
   return result;
 }
 
-timestampShorthandRecurse = () => {
+timestampShorthandRecurse = (str, adjustment) => {
   let result = '';
 
   //Search for presence of a time format
@@ -72,17 +73,16 @@ timestampShorthandRecurse = () => {
 
     //Initialize time
     let hour = 0;
-    let min = 0;
 
     //Split strings at timestamp
     if (str.search(/\d\d[ ]?[PpAa].?[Mm]/) == regexIndex) {
       var firstHalf = str.slice(0, regexIndex);
-      var hour = str.slice(regexIndex, regexIndex + 2);
+      hour = str.slice(regexIndex, regexIndex + 2);
       var secondHalf = str.slice(regexIndex + 2);
 
-    } else if  {
+    } else {
       var firstHalf = str.slice(0, regexIndex);
-      var hour = str.slice(regexIndex, regexIndex + 1);
+       hour = str.slice(regexIndex, regexIndex + 1);
       var secondHalf = str.slice(regexIndex + 1);
 
 
@@ -107,16 +107,14 @@ timestampShorthandRecurse = () => {
     schedule.setHours(hour, 0, 0, 0);
     let converted = schedule.getTime();
     //time needs to be in Seconds since epoch, so dividing result by 1000. Must be in <t:{seconds}:t> format for appropriate display in discord message.
-    let replacement = `<t:${converted/1000}:t>`;
+    var replacement = `<t:${converted/1000}:t>`;
 
     if (/\d+[:]\d\d/.test(secondHalf)) {
       secondHalf = timestampRecurse(secondHalf);
     }
   }
-
   result = firstHalf + replacement + secondHalf;
   return result;
-}
 }
 
 module.exports = {
@@ -127,7 +125,7 @@ module.exports = {
       let str = message.content;
 
     //If message contains a time format, send it to the recursive helper
-      if (/\d+[:]\d\d/.test(str) || \d+[ ]?[PpAa].?[Mm].test(str) ) {
+      if (/\d+[:]\d\d/.test(str) || /\d+[ ]?[PpAa].?[Mm].test(str)/) {
         console.log("It's go time!~");
         //fetch timezone from db
         var userTZ;
@@ -141,7 +139,7 @@ module.exports = {
         if (userTZ) {
           var reply = timestampRecurse(str, botTZ - userTZ);
           reply = timestampShorthandRecurse(reply, botTZ - userTZ);
-          await message.reply(reply));
+          await message.reply(reply);
         } else {
 
           try {
