@@ -7,8 +7,9 @@ const botTZ = -7;
 timestampRecurse = (str, adjustment) => {
   let result = '';
 
+
   //Search for presence of a time format
-  let regexIndex = str.search(/\d+[:]\d\d/);
+  let regexIndex = str.search(/\d?\d[:]\d\d/);
 
   if (regexIndex > -1) {
 
@@ -32,15 +33,18 @@ timestampRecurse = (str, adjustment) => {
     }
 
     //adjust for PM -- Assume PM unless stated otherwise
-    if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 5) || hour > 12) {
+    if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) || hour > 12) {
       hour = hour + 12;
     }
 
+    //Strip redundant AM and PM usage
+    if (-1 < secondHalf.search(/[PpAa].?[Mm]/) &&secondHalf.search(/[PpAa].?[Mm]/) < 2) {
+      secondHalf = secondHalf.replace(/[PpAa].?[Mm]/, '');
+    }
+
+
     //Factor in timezone adjustment
     hour += adjustment;
-
-    //Strip redundant AM and PM usage
-    secondHalf = secondHalf.replace(/[PpAa].?[Mm]/, '');
 
     //convert time into ms since epoch
     let schedule = new Date();
@@ -58,6 +62,63 @@ timestampRecurse = (str, adjustment) => {
   return result;
 }
 
+timestampShorthandRecurse = () => {
+  let result = '';
+
+  //Search for presence of a time format
+  let regexIndex = str.search(\d?\d[ ]?[PpAa].?[Mm]);
+
+  if (regexIndex > -1) {
+
+    //Initialize time
+    let hour = 0;
+    let min = 0;
+
+    //Split strings at timestamp
+    if (str.search(\d\d[ ]?[PpAa].?[Mm]) == regexIndex) {
+      var firstHalf = str.slice(0, regexIndex);
+      var hour = str.slice(regexIndex, regexIndex + 2);
+      var secondHalf = str.slice(regexIndex + 2);
+
+    } else if  {
+      var firstHalf = str.slice(0, regexIndex);
+      var hour = str.slice(regexIndex, regexIndex + 1);
+      var secondHalf = str.slice(regexIndex + 1);
+
+
+    }
+
+    //adjust for PM -- Assume PM unless stated otherwise
+    if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) || hour > 12) {
+      hour = hour + 12;
+    }
+
+    //Strip redundant AM and PM usage
+    if (-1 < secondHalf.search(/[PpAa].?[Mm]/) &&secondHalf.search(/[PpAa].?[Mm]/) < 2) {
+      secondHalf = secondHalf.replace(/[PpAa].?[Mm]/, '');
+    }
+
+
+    //Factor in timezone adjustment
+    hour += adjustment;
+
+    //convert time into ms since epoch
+    let schedule = new Date();
+    schedule.setHours(hour, 0, 0, 0);
+    let converted = schedule.getTime();
+    //time needs to be in Seconds since epoch, so dividing result by 1000. Must be in <t:{seconds}:t> format for appropriate display in discord message.
+    let replacement = `<t:${converted/1000}:t>`;
+
+    if (/\d+[:]\d\d/.test(secondHalf)) {
+      secondHalf = timestampRecurse(secondHalf);
+    }
+  }
+
+  result = firstHalf + replacement + secondHalf;
+  return result;
+}
+}
+
 module.exports = {
   name: Events.MessageCreate,
   async execute(message) {
@@ -66,7 +127,7 @@ module.exports = {
       let str = message.content;
 
     //If message contains a time format, send it to the recursive helper
-      if (/\d+[:]\d\d/.test(str)) {
+      if (/\d+[:]\d\d/.test(str) || \d+[ ]?[PpAa].?[Mm].test(str) ) {
         console.log("It's go time!~");
         //fetch timezone from db
         var userTZ;
@@ -78,7 +139,9 @@ module.exports = {
         })
 
         if (userTZ) {
-          await message.reply(timestampRecurse(str, botTZ - userTZ ));
+          var reply = timestampRecurse(str, botTZ - userTZ);
+          reply = timestampShorthandRecurse(reply, botTZ - userTZ);
+          await message.reply(reply));
         } else {
 
           try {
