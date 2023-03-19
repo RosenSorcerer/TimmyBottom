@@ -66,7 +66,7 @@ timestampShorthandRecurse = () => {
   let result = '';
 
   //Search for presence of a time format
-  let regexIndex = str.search(\d?\d[ ]?[PpAa].?[Mm]);
+  let regexIndex = str.search(/\d?\d[ ]?[PpAa].?[Mm]/);
 
   if (regexIndex > -1) {
 
@@ -75,7 +75,7 @@ timestampShorthandRecurse = () => {
     let min = 0;
 
     //Split strings at timestamp
-    if (str.search(\d\d[ ]?[PpAa].?[Mm]) == regexIndex) {
+    if (str.search(/\d\d[ ]?[PpAa].?[Mm]/) == regexIndex) {
       var firstHalf = str.slice(0, regexIndex);
       var hour = str.slice(regexIndex, regexIndex + 2);
       var secondHalf = str.slice(regexIndex + 2);
