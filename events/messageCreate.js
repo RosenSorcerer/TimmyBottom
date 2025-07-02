@@ -32,10 +32,17 @@ timestampRecurse = (str, adjustment) => {
       min = replacement.slice(2);
     }
 
+    console.log(hour);
     //adjust for PM -- Assume PM unless stated otherwise
-    if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) || hour > 12) {
+    if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour < 12 ) {
       hour = hour + 12;
     }
+    //special rule for 12
+    if ((-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour == 12 ) {
+    hour = hour + 12;
+    }
+
+    console.log(hour);
 
     //Strip redundant AM and PM usage
     if (-1 < secondHalf.search(/[PpAa].?[Mm]/) &&secondHalf.search(/[PpAa].?[Mm]/) < 2) {
@@ -64,13 +71,14 @@ timestampRecurse = (str, adjustment) => {
 }
 
 timestampShorthandRecurse = (str, adjustment) => {
+  console.log("Before Shorthand: " + str);
   let result = '';
 
   //Search for presence of a time format
   let regexIndex = str.search(/\d?\d[ ]?[PpAa].?[Mm]/);
 
   if (regexIndex > -1) {
-
+    console.log("ping!");
     //Initialize time
     let hour = 0;
 
@@ -112,9 +120,11 @@ timestampShorthandRecurse = (str, adjustment) => {
     if (/\d+[:]\d\d/.test(secondHalf)) {
       secondHalf = timestampRecurse(secondHalf);
     }
+
+    result = firstHalf + replacement + secondHalf;
+    return result;
   }
-  result = firstHalf + replacement + secondHalf;
-  return result;
+  return str;
 }
 
 module.exports = {
@@ -139,6 +149,7 @@ module.exports = {
         if (userTZ) {
           var reply = timestampRecurse(str, botTZ - userTZ);
           reply = timestampShorthandRecurse(reply, botTZ - userTZ);
+          console.log(reply);
           await message.reply(reply);
         } else {
 
