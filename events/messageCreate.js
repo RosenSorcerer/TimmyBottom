@@ -7,7 +7,6 @@ const botTZ = -7;
 timestampRecurse = (str, adjustment) => {
   let result = str;
 
-
   //Search for presence of a time format
   let regexIndex = str.search(/\d?\d[:]\d\d/);
 
@@ -35,11 +34,13 @@ timestampRecurse = (str, adjustment) => {
     console.log(hour);
     //adjust for PM -- Assume PM unless stated otherwise
     if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour < 12 ) {
+      console.log("Ping!");
       hour = hour + 12;
     }
     //special rule for 12
     if ((-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour == 12 ) {
-    hour = hour + 12;
+      console.log("Ping!");
+      hour = hour + 12;
     }
 
     console.log(hour);
@@ -57,14 +58,19 @@ timestampRecurse = (str, adjustment) => {
     let schedule = new Date();
     schedule.setHours(hour, min, 0, 0);
     let converted = schedule.getTime();
+
     //time needs to be in Seconds since epoch, so dividing result by 1000. Must be in <t:{seconds}:t> format for appropriate display in discord message.
     replacement = `<t:${converted/1000}:t>`;
 
     if (/\d+[:]\d\d/.test(secondHalf)) {
-      secondHalf = timestampRecurse(secondHalf);
+      console.log("Substring Detected, recursing!");
+      secondHalf = timestampRecurse(secondHalf, adjustment);
     }
   }
  if (firstHalf) {
+  console.log("First Half: " + firstHalf);
+  console.log("Replacement: " + replacement);
+  console.log("secondHalf: " + secondHalf)
   result = firstHalf + replacement + secondHalf;
  }
   return result;
@@ -78,7 +84,7 @@ timestampShorthandRecurse = (str, adjustment) => {
   let regexIndex = str.search(/\d?\d[ ]?[PpAa].?[Mm]/);
 
   if (regexIndex > -1) {
-    console.log("ping!");
+    console.log("Regex exists!");
     //Initialize time
     let hour = 0;
 
@@ -98,15 +104,18 @@ timestampShorthandRecurse = (str, adjustment) => {
 
     //adjust for PM -- Assume PM unless stated otherwise
     if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) || hour > 12) {
-      hour = hour + 12;
+      console.log("Add 12 to the hour: " + hour);
+      hour = +hour + 12;
+      console.log("After addition: " + hour)
     }
 
     //Strip redundant AM and PM usage
-    if (-1 < secondHalf.search(/[PpAa].?[Mm]/) &&secondHalf.search(/[PpAa].?[Mm]/) < 2) {
+    if (-1 < secondHalf.search(/[PpAa].?[Mm]/) && secondHalf.search(/[PpAa].?[Mm]/) < 2) {
       secondHalf = secondHalf.replace(/[PpAa].?[Mm]/, '');
     }
 
-
+    console.log("Hour: " + hour);
+    console.log("Adjustment: " + adjustment);
     //Factor in timezone adjustment
     hour += adjustment;
 
@@ -117,13 +126,16 @@ timestampShorthandRecurse = (str, adjustment) => {
     //time needs to be in Seconds since epoch, so dividing result by 1000. Must be in <t:{seconds}:t> format for appropriate display in discord message.
     var replacement = `<t:${converted/1000}:t>`;
 
-    if (/\d+[:]\d\d/.test(secondHalf)) {
-      secondHalf = timestampRecurse(secondHalf);
+    if (/[PpAa].?[Mm]/.test(secondHalf)) {
+      secondHalf = timestampShorthandRecurse(secondHalf, adjustment);
     }
 
     result = firstHalf + replacement + secondHalf;
+    console.log("After Shorthand changes: " + str);
     return result;
   }
+
+  console.log("No shorthand changes made!");
   return str;
 }
 
@@ -161,6 +173,8 @@ module.exports = {
           }
 
         }
+      } else {
+        console.log("");
       }
     }
   }
