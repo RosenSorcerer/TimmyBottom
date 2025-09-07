@@ -4,7 +4,7 @@
     "pg": "^8.8.0"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node timmyBottom.js",
     "deploy": "node deploy-command.js",
     "global": "node deploy-command-global.js"
   }
