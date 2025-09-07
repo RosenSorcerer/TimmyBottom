@@ -7,23 +7,28 @@ const botTZ = -7;
 timestampRecurse = (str, adjustment) => {
   let result = str;
 
+  console.log("Beginning of iteration: " + result);
+
   //Search for presence of a time format
   let regexIndex = str.search(/\d?\d[:]\d\d/);
 
   if (regexIndex > -1) {
-
+    console.log("Regex found at index: " + regexIndex);
     //Initialize time
     let hour = 0;
     let min = 0;
 
+    console.log("String: " + str);
     //Split strings at timestamp
     if (/\d\d[:]\d\d/.test(str)) {
+      console.log("Regex Test Found result!")
       var firstHalf = str.slice(0, regexIndex);
       var replacement = str.slice(regexIndex, regexIndex + 5);
       var secondHalf = str.slice(regexIndex + 5);
       hour = parseInt(replacement.slice(0, 2));
       min = replacement.slice(3);
     } else {
+      console.log("Regex Test Did not Find Result!");
       var firstHalf = str.slice(0, regexIndex);
       var replacement = str.slice(regexIndex, regexIndex + 4);
       var secondHalf = str.slice(regexIndex + 4);
@@ -31,19 +36,27 @@ timestampRecurse = (str, adjustment) => {
       min = replacement.slice(2);
     }
 
-    console.log(hour);
+    console.log("First Half: " + firstHalf);
+    console.log("Replacement: " + replacement);
+    console.log("Second Half: " + secondHalf);
+
+    console.log("Preadjusted Hour: " + hour);
     //adjust for PM -- Assume PM unless stated otherwise
     if (!(-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour < 12 ) {
-      console.log("Ping!");
+      console.log("Afternoon and Less than Twelve!");
       hour = hour + 12;
     }
     //special rule for 12
-    if ((-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour == 12 ) {
-      console.log("Ping!");
+    else if ((-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour == 12 ) {
+      console.log("Exactly 12 and no AM!");
       hour = hour + 12;
     }
 
-    console.log(hour);
+    else {
+      console.log("Hour is AM and is supposed to be AM!");
+    }
+
+    console.log("Postadjusted Hour: " + hour);
 
     //Strip redundant AM and PM usage
     if (-1 < secondHalf.search(/[PpAa].?[Mm]/) &&secondHalf.search(/[PpAa].?[Mm]/) < 2) {
@@ -59,20 +72,24 @@ timestampRecurse = (str, adjustment) => {
     schedule.setHours(hour, min, 0, 0);
     let converted = schedule.getTime();
 
+    console.log("converted: " + converted);
+
     //time needs to be in Seconds since epoch, so dividing result by 1000. Must be in <t:{seconds}:t> format for appropriate display in discord message.
     replacement = `<t:${converted/1000}:t>`;
+    console.log("Adjusted replacement: " + replacement);
 
     if (/\d+[:]\d\d/.test(secondHalf)) {
       console.log("Substring Detected, recursing!");
       secondHalf = timestampRecurse(secondHalf, adjustment);
     }
   }
- if (firstHalf) {
+
   console.log("First Half: " + firstHalf);
   console.log("Replacement: " + replacement);
   console.log("secondHalf: " + secondHalf)
   result = firstHalf + replacement + secondHalf;
- }
+
+  console.log("End of iteration: " + result);
   return result;
 }
 
@@ -84,21 +101,26 @@ timestampShorthandRecurse = (str, adjustment) => {
   let regexIndex = str.search(/\d?\d[ ]?[PpAa].?[Mm]/);
 
   if (regexIndex > -1) {
-    console.log("Regex exists!");
     //Initialize time
     let hour = 0;
 
     //Split strings at timestamp
     if (str.search(/\d\d[ ]?[PpAa].?[Mm]/) == regexIndex) {
+      console.log(str);
       var firstHalf = str.slice(0, regexIndex);
       hour = str.slice(regexIndex, regexIndex + 2);
       var secondHalf = str.slice(regexIndex + 2);
 
+      console.log("First Half: " + firstHalf);
+      console.log("Hour " + hour);
+      console.log("Second Half: " + secondHalf);
+
+
     } else {
+      console.log(str);
       var firstHalf = str.slice(0, regexIndex);
        hour = str.slice(regexIndex, regexIndex + 1);
       var secondHalf = str.slice(regexIndex + 1);
-
 
     }
 
