@@ -47,13 +47,9 @@ timestampRecurse = (str, adjustment) => {
       hour = hour + 12;
     }
     //special rule for 12
-    else if ((-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour == 12 ) {
+    if ((-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour == 12 ) {
       console.log("Exactly 12 and no AM!");
       hour = hour + 12;
-    }
-
-    else {
-      console.log("Hour is AM and is supposed to be AM!");
     }
 
     console.log("Postadjusted Hour: " + hour);
@@ -84,10 +80,13 @@ timestampRecurse = (str, adjustment) => {
     }
   }
 
+
   console.log("First Half: " + firstHalf);
   console.log("Replacement: " + replacement);
   console.log("secondHalf: " + secondHalf)
-  result = firstHalf + replacement + secondHalf;
+    if (firstHalf != null){
+      result = firstHalf + replacement + secondHalf;
+    }
 
   console.log("End of iteration: " + result);
   return result;
