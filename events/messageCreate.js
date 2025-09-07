@@ -135,7 +135,7 @@ module.exports = {
       let str = message.content;
 
     //If message contains a time format, send it to the recursive helper
-      if (/\d+[:]\d\d/.test(str) || /\d+[ ]?[PpAa].?[Mm].test(str)/) {
+      if (/\d+[:]\d\d/.test(str) || /\d+[ ]?[PpAa].?[Mm]/.test(str)) {
         console.log("It's go time!~");
         //fetch timezone from db
         var userTZ;
