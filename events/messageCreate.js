@@ -59,7 +59,7 @@ timestampRecurse = (str, adjustment) => {
     console.log("Postadjusted Hour: " + hour);
 
     //Strip redundant AM and PM usage
-    if (-1 < secondHalf.search(/[PpAa].?[Mm]/) &&secondHalf.search(/[PpAa].?[Mm]/) < 2) {
+    if (-1 < secondHalf.search(/[PpAa].?[Mm]/) && secondHalf.search(/[PpAa].?[Mm]/) < 2) {
       secondHalf = secondHalf.replace(/[PpAa].?[Mm]/, '');
     }
 
