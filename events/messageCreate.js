@@ -2,6 +2,7 @@ const { Events } = require('discord.js');
 const database = require('../db');
 const db = database.db;
 const botTZ = -7;
+const { token } = require('../config.json');
 
 
 timestampRecurse = (str, adjustment) => {
@@ -163,7 +164,8 @@ timestampShorthandRecurse = (str, adjustment) => {
 module.exports = {
   name: Events.MessageCreate,
   async execute(message) {
-  if (!message.author.bot) {
+
+  if (!message.author.bot || /!ignore/.test(message.content) < 1) {
       console.log("Message Recieved!");
       let str = message.content;
 
@@ -183,7 +185,51 @@ module.exports = {
           var reply = timestampRecurse(str, botTZ - userTZ);
           reply = timestampShorthandRecurse(reply, botTZ - userTZ);
           console.log(reply);
-          await message.reply(reply);
+
+          fetch('https://discord.com/api/channels/732059486449041451/webhooks', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bot ${token}`
+            }
+          }).then(response => {
+            if (!response.ok) {
+
+            }
+            return response.json();
+          }).then(result => {
+
+            var checkChannel = (webhookChannel) => {
+              return (webhookChannel.channel_id === message.channelId && webhookChannel.user.id === '1062231086047952906');
+            }
+
+            return result[result.findIndex(checkChannel)]
+          }).then(result => {
+            console.log(message);
+            fetch(result.url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  "content": reply,
+                  "username": message.author.username,
+                  "avatar_url": `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
+              }),
+            }).then(response => {
+              if (!response.ok) {
+                console.log("Error!");
+              } else {
+                console.log("Success!");
+              }
+              return response;
+            }).then(response => {
+              console.log(response);
+            })
+
+          })
+
+          // await message.reply(reply);
         } else {
 
           try {
