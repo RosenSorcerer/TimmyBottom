@@ -186,7 +186,9 @@ module.exports = {
           reply = timestampShorthandRecurse(reply, botTZ - userTZ);
           console.log(reply);
 
-          fetch('https://discord.com/api/channels/732059486449041451/webhooks', {
+          console.log(message.channelId);
+
+          fetch(`https://discord.com/api/channels/${message.channelId}/webhooks`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -202,14 +204,43 @@ module.exports = {
             var checkChannel = (webhookChannel) => {
               return (webhookChannel.channel_id === message.channelId && webhookChannel.user.id === '1062231086047952906');
             }
+            console.log(result);
+            var index = result.findIndex(checkChannel)
 
-            return result[result.findIndex(checkChannel)]
+            if (index === -1) {
+              console.log("Creating a webhook!");
+              console.log(`TimmyBottom.${message.channelId}`);
+              return fetch(`https://discord.com/api/channels/${message.channelId}/webhooks`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bot ${token}`,
+                },
+                body: JSON.stringify({
+                  "name": `TimmyBottom.${message.channelId}`,
+                  "avatar": "https://cdn.discordapp.com/avatars/1062231086047952906/ad95e3f273e7eb0dc328843cf95d8e19.png"
+                })
+              }).then(response => {
+                console.log(response);
+                return {
+                  url: response.url,
+                }
+              })
+            } else {
+              console.log(result);
+              console.log(index);
+
+              return result[index]
+            }
+
+
           }).then(result => {
-            console.log(message);
+            console.log(result);
             fetch(result.url, {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bot ${token}`,
               },
               body: JSON.stringify({
                   "content": reply,
