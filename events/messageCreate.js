@@ -10,28 +10,31 @@ timestampRecurse = (str, adjustment) => {
   console.log("Beginning of iteration: " + result);
 
   //Search for presence of a time format
-  let regexIndex = str.search(/\d?\d[:]\d\d/);
+  let regexIndex = str.search(/(^|\s)\d?\d:\d\d/);
 
   if (regexIndex > -1) {
     console.log("Regex found at index: " + regexIndex);
     //Initialize time
     let hour = 0;
     let min = 0;
+    var firstHalf;
+    var secondHalf;
+    var replacement;
 
     console.log("String: " + str);
     //Split strings at timestamp
-    if (/\d\d[:]\d\d/.test(str)) {
+    if (/(^|\s)\d\d:\d\d/.test(str)) {
       console.log("Regex Test Found result!")
-      var firstHalf = str.slice(0, regexIndex);
-      var replacement = str.slice(regexIndex, regexIndex + 5);
-      var secondHalf = str.slice(regexIndex + 5);
+      firstHalf = str.slice(0, regexIndex);
+      replacement = str.slice(regexIndex, regexIndex + 5);
+      secondHalf = str.slice(regexIndex + 5);
       hour = parseInt(replacement.slice(0, 2));
       min = replacement.slice(3);
     } else {
       console.log("Regex Test Did not Find Result!");
-      var firstHalf = str.slice(0, regexIndex);
-      var replacement = str.slice(regexIndex, regexIndex + 4);
-      var secondHalf = str.slice(regexIndex + 4);
+      firstHalf = str.slice(0, regexIndex);
+      replacement = str.slice(regexIndex, regexIndex + 4);
+      secondHalf = str.slice(regexIndex + 4);
       hour = parseInt(replacement.slice(0, 1));
       min = replacement.slice(2);
     }
@@ -47,7 +50,7 @@ timestampRecurse = (str, adjustment) => {
       hour = hour + 12;
     }
     //special rule for 12
-    if ((-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour == 12 ) {
+    if ((-1 < secondHalf.search(/[Aa].?[Mm]/) && secondHalf.search(/[Aa].?[Mm]/) < 2) && hour === 12 ) {
       console.log("Exactly 12 and no AM!");
       hour = hour + 12;
     }
@@ -97,18 +100,20 @@ timestampShorthandRecurse = (str, adjustment) => {
   let result = '';
 
   //Search for presence of a time format
-  let regexIndex = str.search(/\d?\d[ ]?[PpAa].?[Mm]/);
+  let regexIndex = str.search(/\d?\d ?[PpAa].?[Mm]/);
 
   if (regexIndex > -1) {
     //Initialize time
     let hour = 0;
 
+    var firstHalf;
+    var secondHalf;
     //Split strings at timestamp
-    if (str.search(/\d\d[ ]?[PpAa].?[Mm]/) == regexIndex) {
+    if (str.search(/\d\d ?[PpAa].?[Mm]/) === regexIndex) {
       console.log(str);
-      var firstHalf = str.slice(0, regexIndex);
+      firstHalf = str.slice(0, regexIndex);
       hour = str.slice(regexIndex, regexIndex + 2);
-      var secondHalf = str.slice(regexIndex + 2);
+      secondHalf = str.slice(regexIndex + 2);
 
       console.log("First Half: " + firstHalf);
       console.log("Hour " + hour);
@@ -117,9 +122,9 @@ timestampShorthandRecurse = (str, adjustment) => {
 
     } else {
       console.log(str);
-      var firstHalf = str.slice(0, regexIndex);
+      firstHalf = str.slice(0, regexIndex);
        hour = str.slice(regexIndex, regexIndex + 1);
-      var secondHalf = str.slice(regexIndex + 1);
+      secondHalf = str.slice(regexIndex + 1);
 
     }
 
@@ -145,7 +150,7 @@ timestampShorthandRecurse = (str, adjustment) => {
     schedule.setHours(hour, 0, 0, 0);
     let converted = schedule.getTime();
     //time needs to be in Seconds since epoch, so dividing result by 1000. Must be in <t:{seconds}:t> format for appropriate display in discord message.
-    var replacement = `<t:${converted/1000}:t>`;
+    let replacement = `<t:${converted/1000}:t>`;
 
     if (/[PpAa].?[Mm]/.test(secondHalf)) {
       secondHalf = timestampShorthandRecurse(secondHalf, adjustment);
@@ -168,7 +173,7 @@ module.exports = {
       let str = message.content;
 
     //If message contains a time format, send it to the recursive helper
-      if (/\d+[:]\d\d/.test(str) || /\d+[ ]?[PpAa].?[Mm]/.test(str)) {
+      if (/\d+:\d\d/.test(str) || /\d+ ?[PpAa].?[Mm]/.test(str)) {
         console.log("It's go time!~");
         //fetch timezone from db
         var userTZ;
