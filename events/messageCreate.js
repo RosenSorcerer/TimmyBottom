@@ -62,7 +62,6 @@ timestampRecurse = (str, adjustment) => {
       secondHalf = secondHalf.replace(/[PpAa].?[Mm]/, '');
     }
 
-
     //Factor in timezone adjustment
     hour += adjustment;
 
@@ -82,7 +81,6 @@ timestampRecurse = (str, adjustment) => {
       secondHalf = timestampRecurse(secondHalf, adjustment);
     }
   }
-
 
   console.log("First Half: " + firstHalf);
   console.log("Replacement: " + replacement);
@@ -119,13 +117,11 @@ timestampShorthandRecurse = (str, adjustment) => {
       console.log("Hour " + hour);
       console.log("Second Half: " + secondHalf);
 
-
     } else {
       console.log(str);
       firstHalf = str.slice(0, regexIndex);
        hour = str.slice(regexIndex, regexIndex + 1);
       secondHalf = str.slice(regexIndex + 1);
-
     }
 
     //adjust for PM -- Assume PM unless stated otherwise
